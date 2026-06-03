@@ -18,7 +18,7 @@ export const profile = {
   email: 'rohul4316@gmail.com',
   github: 'https://github.com/ruhul1845',
   linkedin: 'https://linkedin.com/in/ruhulaminn',
-  cv: '/Ruhul-Amin-CV.pdf',
+  cv: 'https://raw.githubusercontent.com/ruhul1845/Resume/main/CV.pdf',
   summary:
     'Final-year CSE student at the University of Dhaka with hands-on experience in full-stack web development using React, Next.js, Express.js, FastAPI, PostgreSQL, MongoDB, and Supabase. I build responsive real-world applications, backend APIs, authentication systems, dashboards, and deployment-ready projects.',
 }
