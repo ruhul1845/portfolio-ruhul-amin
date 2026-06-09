@@ -56,7 +56,7 @@ function Hero() {
           <p className="mt-8 max-w-2xl text-base leading-8 text-neutral-300">{profile.summary}</p>
           <div className="mt-10 flex flex-wrap gap-4">
             <a href={profile.cv} download className="premium-btn">
-              <FaDownload /> Download CV
+              <FaDownload /> Download Resume
             </a>
             <a href={profile.github} target="_blank" rel="noreferrer" className="icon-btn"><FaGithub /> GitHub</a>
             <a href={profile.linkedin} target="_blank" rel="noreferrer" className="icon-btn"><FaLinkedin /> LinkedIn</a>
