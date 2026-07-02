@@ -16,8 +16,9 @@ export const profile = {
   location: 'Dhaka, Bangladesh',
   phone: '+880 1834 340813',
   email: 'rohul4316@gmail.com',
+  
   github: 'https://github.com/ruhul1845',
-  linkedin: 'https://linkedin.com/in/ruhulaminn',
+  linkedin: 'https://www.linkedin.com/in/ruhulamiinn/',
   cv: 'https://raw.githubusercontent.com/ruhul1845/Resume/main/resume.pdf',
   summary:
     'I have hands-on experience in full-stack web development using React, Next.js, Express.js, FastAPI, PostgreSQL, MongoDB, and Supabase. I build responsive real-world applications, backend APIs, authentication systems, dashboards, and deployment-ready projects.',
@@ -137,7 +138,7 @@ export const contacts = [
   { icon: <FaPhoneAlt />, label: 'Phone', value: profile.phone, href: `tel:${profile.phone.replaceAll(' ', '')}` },
   { icon: <FaMapMarkerAlt />, label: 'Location', value: profile.location, href: '#' },
   { icon: <FaGithub />, label: 'GitHub', value: 'github.com/ruhul1845', href: profile.github },
-  { icon: <FaLinkedin />, label: 'LinkedIn', value: 'linkedin.com/in/ruhulaminn', href: profile.linkedin },
+  { icon: <FaLinkedin />, label: 'LinkedIn', value: 'linkedin.com/in/ruhulamiinn', href: profile.linkedin },
 ]
 
 export const icons = { FaExternalLinkAlt, FaDownload, FaGithub, FaLinkedin }
