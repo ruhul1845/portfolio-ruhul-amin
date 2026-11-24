@@ -1,67 +1,169 @@
-import { Link, NavLink, Route, Routes } from 'react-router-dom'
-import { contacts, icons, navLinks, profile, projects, quickFacts, skills } from './data.jsx'
+import { useState, useEffect } from 'react'
+import {
+  FaEnvelope,
+  FaGithub,
+  FaLinkedin,
+  FaFilePdf,
+  FaExternalLinkAlt,
+  FaChevronDown,
+  FaChevronUp,
+  FaBookOpen,
+  FaMapMarkerAlt,
+  FaPhoneAlt,
+  FaBars,
+  FaTimes,
+  FaMoon,
+  FaSun,
+} from 'react-icons/fa'
+import {
+  profile,
+  navLinks,
+  recentUpdates,
+  publications,
+  allProjects,
+  timelineItems,
+  skillGroups,
+} from './data.jsx'
 
-const { FaExternalLinkAlt, FaDownload, FaGithub, FaLinkedin } = icons
+function Navbar() {
+  const [open, setOpen] = useState(false)
+  const [dark, setDark] = useState(() => localStorage.getItem('theme') === 'dark')
 
-function SectionTitle({ kicker, title, text }) {
+  useEffect(() => {
+    const root = document.documentElement
+    if (dark) {
+      root.classList.add('dark-theme')
+      localStorage.setItem('theme', 'dark')
+    } else {
+      root.classList.remove('dark-theme')
+      localStorage.setItem('theme', 'light')
+    }
+  }, [dark])
+
   return (
-    <div className="mx-auto mb-12 max-w-3xl text-center">
-      <p className="text-sm font-bold uppercase tracking-[0.28em] text-blue-600">{kicker}</p>
-      <h2 className="mt-3 text-3xl font-black tracking-tight text-slate-950 md:text-5xl">{title}</h2>
-      {text && <p className="mt-5 leading-8 text-slate-600">{text}</p>}
-    </div>
-  )
-}
+    <header className="sticky top-0 z-50 border-b border-slate-200/80 bg-white/95 backdrop-blur-md">
+      <div className="mx-auto flex max-w-5xl items-center justify-between px-6 py-4">
+        <a
+          href="#about"
+          className="text-lg font-bold tracking-tight text-slate-900 transition hover:text-indigo-600"
+        >
+          {profile.brand}
+        </a>
 
-function Header() {
-  return (
-    <header className="fixed left-0 right-0 top-0 z-50 border-b border-slate-200/80 bg-white/90 backdrop-blur-xl">
-      <nav className="mx-auto flex max-w-7xl items-center justify-center gap-8 px-5 py-4 lg:px-8">
-        <div className="hidden items-center gap-8 md:flex">
-          {navLinks.map((link) => (
-            <NavLink
-              key={link.path}
-              to={link.path}
-              className={({ isActive }) =>
-                `text-xs font-bold uppercase tracking-[0.18em] transition ${isActive ? 'text-blue-600' : 'text-slate-600 hover:text-blue-600'}`
-              }
-            >
-              {link.label}
-            </NavLink>
-          ))}
+        <div className="flex items-center gap-4 md:gap-7">
+          <nav className="hidden items-center gap-7 md:flex">
+            {navLinks.map((link) => (
+              <a
+                key={link.href}
+                href={link.href}
+                className="text-sm font-medium text-slate-600 transition hover:text-indigo-600"
+              >
+                {link.label}
+              </a>
+            ))}
+          </nav>
+
+          {/* Half-Moon / Sun Theme Toggle (Right Side of Navbar) */}
+          {/* Half-Moon / Sun Theme Toggle (Right Side of Navbar) */}
+          <button
+            type="button"
+            onClick={() => setDark(!dark)}
+            aria-label={dark ? 'Switch to light mode' : 'Switch to dark mode'}
+            title={dark ? 'Dark Mode' : 'Light Mode'}
+            className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-700 shadow-2xs transition hover:border-indigo-300 hover:bg-indigo-50 hover:text-indigo-600"
+          >
+            {dark ? <FaMoon className="text-indigo-400" /> : <FaSun className="text-amber-500" />}
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setOpen(!open)}
+            aria-label="Toggle navigation"
+            className="rounded-lg p-2 text-slate-700 hover:bg-slate-100 md:hidden"
+          >
+            {open ? <FaTimes /> : <FaBars />}
+          </button>
         </div>
-        <Link to="/contact" className="rounded-full bg-blue-600 px-5 py-2.5 text-xs font-black uppercase tracking-widest text-white shadow-sm transition hover:bg-blue-700">
-          Hire Me
-        </Link>
-      </nav>
+      </div>
+
+      {open && (
+        <div className="border-t border-slate-100 bg-white px-6 py-4 md:hidden">
+          <div className="flex flex-col gap-3">
+            {navLinks.map((link) => (
+              <a
+                key={link.href}
+                href={link.href}
+                onClick={() => setOpen(false)}
+                className="text-sm font-medium text-slate-700 hover:text-indigo-600"
+              >
+                {link.label}
+              </a>
+            ))}
+          </div>
+        </div>
+      )}
     </header>
   )
 }
 
-function Hero() {
+function HeroSection() {
+  const socialPills = [
+    { label: 'Email', href: `mailto:${profile.email}`, icon: <FaEnvelope className="text-slate-600" /> },
+    { label: 'Research Square', href: profile.researchSquare, icon: <FaBookOpen className="text-slate-600" /> },
+    { label: 'GitHub', href: profile.github, icon: <FaGithub className="text-slate-600" /> },
+    { label: 'LinkedIn', href: profile.linkedin, icon: <FaLinkedin className="text-slate-600" /> },
+    { label: 'Resume / CV', href: profile.cvUrl, icon: <FaFilePdf className="text-slate-600" />, download: 'Ruhul_Amin_Resume.pdf' },
+  ]
+
   return (
-    <section className="relative min-h-screen overflow-hidden bg-white pt-24">
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_12%_25%,rgba(37,99,235,.10),transparent_30%),radial-gradient(circle_at_88%_35%,rgba(14,165,233,.10),transparent_28%)]" />
-      <div className="relative mx-auto grid min-h-[calc(100vh-96px)] max-w-7xl items-center gap-14 px-5 py-16 lg:grid-cols-[1.05fr_.95fr] lg:px-8">
+    <section id="about" className="mx-auto max-w-5xl px-6 pb-20 pt-16 md:pt-24">
+      <div className="grid items-center gap-12 md:grid-cols-[1.35fr_0.65fr]">
         <div>
-          <p className="text-lg font-semibold text-slate-500">Hi, I am</p>
-          <h1 className="mt-2 text-5xl font-black leading-tight tracking-tight text-slate-950 md:text-7xl">{profile.name}</h1>
-          <p className="mt-5 text-xl font-bold text-blue-600 md:text-2xl">{profile.title}</p>
-          <p className="mt-2 text-slate-500">{profile.subtitle}</p>
-          <p className="mt-7 max-w-2xl text-base leading-8 text-slate-600">{profile.summary}</p>
-          <div className="mt-10 flex flex-wrap gap-4">
-            <a href={profile.cv} download className="premium-btn">
-              <FaDownload /> Download Resume
+          <h1 className="font-serif-display text-4xl font-bold tracking-tight text-slate-900 sm:text-5xl">
+            {profile.name}
+          </h1>
+          <p className="font-serif-display mt-3 text-xl font-semibold text-slate-700 sm:text-2xl">
+            {profile.roleLine}
+            <a
+              href={profile.institutionUrl}
+              target="_blank"
+              rel="noreferrer"
+              className="text-indigo-600 hover:underline"
+            >
+              {profile.institution}
             </a>
-            <a href={profile.github} target="_blank" rel="noreferrer" className="icon-btn"><FaGithub /> GitHub</a>
-            <a href={profile.linkedin} target="_blank" rel="noreferrer" className="icon-btn"><FaLinkedin /> LinkedIn</a>
+          </p>
+
+          <div className="mt-6 space-y-4 text-[15.5px] leading-7 text-slate-600">
+            {profile.bioParagraphs.map((paragraph, idx) => (
+              <p key={idx}>{paragraph}</p>
+            ))}
+          </div>
+
+          <div className="mt-8 flex flex-wrap gap-2.5">
+            {socialPills.map((item) => (
+              <a
+                key={item.label}
+                href={item.href}
+                target={item.href.startsWith('http') ? '_blank' : undefined}
+                rel={item.href.startsWith('http') ? 'noreferrer' : undefined}
+                download={item.download}
+                className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-1.5 text-xs font-medium text-slate-700 shadow-2xs transition hover:border-indigo-300 hover:bg-indigo-50/50 hover:text-indigo-700"
+              >
+                {item.icon}
+                <span>{item.label}</span>
+              </a>
+            ))}
           </div>
         </div>
-        <div className="relative flex justify-center py-8">
-          <div className="profile-ring">
-            <div className="profile-photo-wrap">
-              <img src="/profile.jpeg" alt="Ruhul Amin" className="h-full w-full object-cover" />
-            </div>
+
+        <div className="flex justify-center md:justify-end">
+          <div className="h-56 w-56 overflow-hidden rounded-full border-4 border-white shadow-xl ring-1 ring-slate-200 sm:h-64 sm:w-64">
+            <img
+              src={profile.photo}
+              alt="Ruhul Amin"
+              className="h-full w-full object-cover object-top"
+            />
           </div>
         </div>
       </div>
@@ -69,149 +171,482 @@ function Hero() {
   )
 }
 
-function IntroBand() {
+function UpdatesSection() {
+  const [expanded, setExpanded] = useState(false)
+  const visibleUpdates = expanded ? recentUpdates : recentUpdates.slice(0, 3)
+
   return (
-    <section className="border-y border-slate-200 bg-slate-50 px-5 py-16 lg:px-8">
-      <div className="mx-auto max-w-7xl">
-        <h2 className="text-2xl font-black tracking-tight text-slate-950">Developer Profile</h2>
-        <p className="mt-5 max-w-5xl leading-8 text-slate-600">
-          I build clean, responsive and deployment-ready applications. My experience includes car rental platforms, university departmental hubs, backend issue-tracking APIs, real-time notifications, authentication, dashboard features and database-driven apps.
-        </p>
-        <Link to="/portfolio" className="mt-8 inline-block border-b-2 border-blue-600 pb-1 text-sm font-black uppercase tracking-[0.2em] text-blue-600 hover:text-blue-800">Explore Projects</Link>
+    <section id="updates" className="border-t border-slate-100 bg-slate-50/60 py-16">
+      <div className="mx-auto max-w-5xl px-6">
+        <h2 className="font-serif-display section-underline text-2xl font-bold text-slate-900 sm:text-3xl">
+          Recent Updates
+        </h2>
+
+        <div className="mt-8 rounded-2xl border border-slate-200/90 bg-white p-6 shadow-xs sm:p-8">
+          <ul className="space-y-4">
+            {visibleUpdates.map((item, idx) => (
+              <li key={idx} className="flex flex-col gap-2 sm:flex-row sm:items-baseline sm:gap-4">
+                <span
+                  className={`inline-flex w-fit shrink-0 items-center justify-center rounded-md px-2.5 py-0.5 text-xs font-semibold ${
+                    item.highlight
+                      ? 'bg-indigo-600 text-white'
+                      : 'bg-slate-600 text-white'
+                  }`}
+                >
+                  {item.date}
+                </span>
+                <p className="text-sm leading-6 text-slate-700 sm:text-[15px]">
+                  {item.content.map((part, pIdx) => {
+                    if (part.link) {
+                      return (
+                        <a
+                          key={pIdx}
+                          href={part.link}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="font-medium text-indigo-600 underline decoration-indigo-300 underline-offset-2 hover:text-indigo-800"
+                        >
+                          {part.text}
+                        </a>
+                      )
+                    }
+                    if (part.bold) {
+                      return (
+                        <strong key={pIdx} className="font-semibold text-slate-900">
+                          {part.text}
+                        </strong>
+                      )
+                    }
+                    return <span key={pIdx}>{part.text}</span>
+                  })}
+                </p>
+              </li>
+            ))}
+          </ul>
+
+          {recentUpdates.length > 3 && (
+            <button
+              type="button"
+              onClick={() => setExpanded(!expanded)}
+              className="mt-6 inline-flex items-center gap-1.5 text-sm font-semibold text-indigo-600 transition hover:text-indigo-800"
+            >
+              <span>{expanded ? 'Show Less' : 'See More'}</span>
+              {expanded ? <FaChevronUp className="text-xs" /> : <FaChevronDown className="text-xs" />}
+            </button>
+          )}
+        </div>
       </div>
     </section>
   )
 }
 
-function About() {
+function ResearchSection() {
   return (
-    <main className="page-pad bg-neutral-50">
-      <SectionTitle kicker="About Me" title="A Little About Me" text="A full-stack developer who enjoys building useful products from polished interfaces to reliable APIs and databases." />
-      <div className="mx-auto grid max-w-7xl gap-6 md:grid-cols-3">
-        {quickFacts.map((fact) => (
-          <div key={fact.label} className="rounded-3xl border border-neutral-200 bg-white p-8 shadow-soft">
-            <div className="mb-5 text-3xl text-blue-600">{fact.icon}</div>
-            <h3 className="font-black uppercase tracking-[0.2em]">{fact.label}</h3>
-            <p className="mt-4 leading-7 text-neutral-600">{fact.value}</p>
-          </div>
-        ))}
-      </div>
-      <div className="mx-auto mt-12 max-w-4xl text-center leading-8 text-slate-700">
-        <p>
-          In my projects, I use React, Next.js and Tailwind CSS to build responsive frontends. For backend development, I work with Node.js, Express.js, JavaScript and TypeScript, supported by MongoDB, PostgreSQL and Supabase. I also implement authentication and application features using JWT, bcrypt, Better Auth, Stripe and Supabase Realtime.
+    <section id="research" className="border-t border-slate-100 py-16">
+      <div className="mx-auto max-w-5xl px-6">
+        <h2 className="font-serif-display section-underline text-2xl font-bold text-slate-900 sm:text-3xl">
+          Research &amp; Preprints
+        </h2>
+
+        <p className="mt-5 text-sm text-slate-600">
+          For preprint details and citation metrics, visit{' '}
+          <a
+            href={profile.researchSquare}
+            target="_blank"
+            rel="noreferrer"
+            className="font-medium text-indigo-600 underline underline-offset-2 hover:text-indigo-800"
+          >
+            Research Square
+          </a>
+          .
         </p>
+
+        <div className="mt-8 space-y-6">
+          {publications.map((pub, idx) => (
+            <div
+              key={idx}
+              className="border-l-2 border-indigo-600 pl-5"
+            >
+              <h3 className="font-serif-display text-lg font-bold text-slate-900 sm:text-xl">
+                {pub.title}
+              </h3>
+              <p className="mt-1 text-sm italic text-slate-600">{pub.venue}</p>
+              <p className="mt-1 text-sm font-medium text-slate-800">{pub.authors}</p>
+              <div className="mt-3 flex flex-wrap gap-2">
+                <a
+                  href={pub.doiUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="inline-flex items-center gap-1.5 rounded-full border border-slate-300 bg-white px-3.5 py-1 text-xs font-medium text-slate-700 transition hover:border-indigo-400 hover:text-indigo-700"
+                >
+                  <FaExternalLinkAlt className="text-[10px]" />
+                  <span>DOI: {pub.doiLabel}</span>
+                </a>
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
-    </main>
+    </section>
   )
 }
 
-function Skills() {
+function ProjectsSection() {
+  const [showAll, setShowAll] = useState(false)
+  const visibleProjects = showAll ? allProjects : allProjects.slice(0, 3)
+
   return (
-    <main className="page-pad bg-white">
-      <SectionTitle kicker="Expertise" title="Skills & Tools" text="A practical toolkit for building complete products—from polished interfaces to reliable APIs, data and deployment." />
-      <div className="mx-auto grid max-w-7xl gap-5 md:grid-cols-2 lg:grid-cols-3">
-        {skills.map((group) => (
-          <div key={group.group} className="rounded-2xl border border-slate-200 bg-white p-6 shadow-card transition hover:-translate-y-1 hover:border-blue-200 hover:shadow-card-hover">
-            <div className="mb-5 flex items-center gap-3">
-              <span className="h-2.5 w-2.5 rounded-full bg-blue-600" />
-              <h3 className="font-black text-slate-900">{group.group}</h3>
-            </div>
-            <div className="flex flex-wrap gap-2.5">
-              {group.items.map((skill) => (
-                <div key={skill.name} className="flex items-center gap-2 rounded-lg border border-slate-200 bg-slate-50 px-3 py-2.5 transition hover:border-blue-200 hover:bg-blue-50">
-                  <span className="text-lg text-blue-600">{skill.icon}</span>
-                  <span className="text-sm font-semibold text-slate-700">{skill.name}</span>
+    <section id="projects" className="border-t border-slate-100 bg-slate-50/50 py-16">
+      <div className="mx-auto max-w-5xl px-6">
+        <div className="flex flex-wrap items-end justify-between gap-4">
+          <div>
+            <h2 className="font-serif-display section-underline text-2xl font-bold text-slate-900 sm:text-3xl">
+              Software &amp; Projects
+            </h2>
+            <p className="mt-3 text-sm text-slate-600">
+              {showAll
+                ? `Showing all ${allProjects.length} deployed software systems.`
+                : 'Showing 3 flagship projects. Click View All to explore all deployed applications.'}
+            </p>
+          </div>
+
+          {allProjects.length > 3 && (
+            <button
+              type="button"
+              onClick={() => setShowAll(!showAll)}
+              className="inline-flex items-center gap-2 rounded-full border border-indigo-200 bg-white px-4 py-2 text-xs font-semibold text-indigo-600 shadow-2xs transition hover:border-indigo-400 hover:bg-indigo-50"
+            >
+              <span>{showAll ? 'Show Featured (3)' : `View All (${allProjects.length})`}</span>
+              {showAll ? <FaChevronUp className="text-[11px]" /> : <FaChevronDown className="text-[11px]" />}
+            </button>
+          )}
+        </div>
+
+        <div className="mt-8 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          {visibleProjects.map((project) => (
+            <article
+              key={project.title}
+              className="flex flex-col justify-between overflow-hidden rounded-2xl border border-indigo-200/80 bg-white shadow-2xs transition hover:-translate-y-0.5 hover:border-indigo-400 hover:shadow-md"
+            >
+              <div>
+                {project.image && (
+                  <a
+                    href={project.liveUrl}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="block overflow-hidden border-b border-slate-100 bg-slate-100"
+                  >
+                    <img
+                      src={project.image}
+                      alt={project.title}
+                      className="h-44 w-full object-cover object-top transition duration-300 hover:scale-[1.02]"
+                    />
+                  </a>
+                )}
+
+                <div className="p-6">
+                  <div className="flex items-center justify-between gap-3">
+                    <h3 className="font-serif-display text-xl font-bold text-slate-900">
+                      {project.title}
+                    </h3>
+                    <div className="flex items-center gap-3 text-slate-500">
+                      {project.githubUrl && (
+                        <a
+                          href={project.githubUrl}
+                          target="_blank"
+                          rel="noreferrer"
+                          aria-label={`${project.title} GitHub`}
+                          className="transition hover:text-indigo-600"
+                        >
+                          <FaGithub className="text-base" />
+                        </a>
+                      )}
+                      {project.liveUrl && (
+                        <a
+                          href={project.liveUrl}
+                          target="_blank"
+                          rel="noreferrer"
+                          aria-label={`${project.title} Live Demo`}
+                          className="transition hover:text-indigo-600"
+                        >
+                          <FaExternalLinkAlt className="text-sm" />
+                        </a>
+                      )}
+                    </div>
+                  </div>
+
+                  <p className="mt-3 text-sm leading-6 text-slate-600">{project.description}</p>
                 </div>
+              </div>
+
+              <div className="px-6 pb-6">
+                <div className="flex flex-wrap gap-2">
+                  {project.tags.map((tag) => (
+                    <span
+                      key={tag}
+                      className="rounded-md border border-slate-200 bg-slate-50 px-2.5 py-0.5 text-xs font-medium text-slate-600"
+                    >
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            </article>
+          ))}
+        </div>
+
+        {allProjects.length > 3 && (
+          <div className="mt-10 text-center">
+            <button
+              type="button"
+              onClick={() => setShowAll(!showAll)}
+              className="inline-flex items-center gap-2 rounded-lg bg-indigo-600 px-5 py-2.5 text-xs font-semibold uppercase tracking-wider text-white shadow-2xs transition hover:bg-indigo-700"
+            >
+              <span>{showAll ? 'Show Less' : `View All Projects (${allProjects.length})`}</span>
+              {showAll ? <FaChevronUp className="text-[11px]" /> : <FaChevronDown className="text-[11px]" />}
+            </button>
+          </div>
+        )}
+      </div>
+    </section>
+  )
+}
+
+function ExperienceAndSkillsSection() {
+  const [activeTab, setActiveTab] = useState('all')
+
+  const filterTabs = [
+    { key: 'all', label: 'All Skills' },
+    { key: 'fullstack', label: 'Full-Stack Web' },
+    { key: 'data', label: 'Databases' },
+    { key: 'languages', label: 'Languages' },
+    { key: 'ml', label: 'ML & Data' },
+    { key: 'tools', label: 'Tools & Cloud' },
+  ]
+
+  const filteredGroups =
+    activeTab === 'all'
+      ? skillGroups
+      : skillGroups.filter((group) => group.key === activeTab)
+
+  return (
+    <section id="experience" className="border-t border-slate-100 py-16">
+      <div className="mx-auto max-w-5xl px-6">
+        <h2 className="font-serif-display section-underline text-2xl font-bold text-slate-900 sm:text-3xl">
+          Education &amp; Experience
+        </h2>
+
+        <div className="mt-10 border-l-2 border-slate-200 pl-6 sm:ml-2">
+          <div className="space-y-8">
+            {timelineItems.map((item, idx) => (
+              <div key={idx} className="relative">
+                <span
+                  className={`absolute -left-[33px] top-1.5 flex h-4 w-4 items-center justify-center rounded-full border-2 bg-white ${
+                    item.active ? 'border-indigo-300' : 'border-slate-300'
+                  }`}
+                >
+                  <span
+                    className={`h-2 w-2 rounded-full ${
+                      item.active ? 'bg-indigo-600' : 'bg-slate-700'
+                    }`}
+                  />
+                </span>
+                <h3 className="font-serif-display text-lg font-bold text-slate-900">
+                  {item.title}
+                </h3>
+                <p className="mt-0.5 text-sm font-medium text-indigo-600">
+                  {item.org} <span className="text-slate-400">|</span> {item.period}
+                </p>
+                <p className="mt-2 text-sm leading-6 text-slate-600">{item.description}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="mt-16">
+          <div className="flex flex-wrap items-end justify-between gap-4">
+            <div>
+              <h2 className="font-serif-display section-underline text-2xl font-bold text-slate-900 sm:text-3xl">
+                Technical Skills
+              </h2>
+              <p className="mt-3 text-xs text-slate-500">
+                Highlighted badges indicate primary daily production technologies.
+              </p>
+            </div>
+
+            <div className="flex flex-wrap gap-2">
+              {filterTabs.map((tab) => (
+                <button
+                  key={tab.key}
+                  type="button"
+                  onClick={() => setActiveTab(tab.key)}
+                  className={`rounded-full px-3.5 py-1.5 text-xs font-semibold transition ${
+                    activeTab === tab.key
+                      ? 'bg-indigo-600 text-white shadow-2xs'
+                      : 'border border-slate-200 bg-white text-slate-600 hover:border-indigo-300 hover:text-indigo-600'
+                  }`}
+                >
+                  {tab.label}
+                </button>
               ))}
             </div>
           </div>
-        ))}
-      </div>
-    </main>
-  )
-}
 
-function Portfolio() {
-  return (
-    <main className="page-pad bg-slate-50">
-      <SectionTitle kicker="Portfolio" title="Featured Projects" text="A selection of deployed products across full-stack development, APIs and real-time applications." />
-      <div className="mx-auto grid max-w-7xl gap-6 md:grid-cols-2">
-        {projects.map((project, index) => (
-          <a key={project.title} href={project.url} target="_blank" rel="noreferrer" className="group relative overflow-hidden rounded-3xl border border-slate-200 bg-white p-8 shadow-card transition hover:-translate-y-2 hover:border-blue-300 hover:shadow-card-hover">
-            <div className="absolute -right-10 -top-10 h-36 w-36 rounded-full bg-blue-100 blur-2xl transition group-hover:bg-blue-200" />
-            <p className="text-sm font-black tracking-[0.3em] text-blue-600">0{index + 1}</p>
-            <div className="mt-5 flex items-start justify-between gap-4">
-              <div>
-                <h3 className="text-3xl font-black text-slate-950">{project.title}</h3>
-                <p className="mt-2 text-slate-500">{project.category}</p>
+          <div
+            className={`mt-8 grid gap-4 ${
+              filteredGroups.length === 1
+                ? 'grid-cols-1'
+                : filteredGroups.length === 2
+                  ? 'sm:grid-cols-2'
+                  : 'sm:grid-cols-2 lg:grid-cols-3'
+            }`}
+          >
+            {filteredGroups.map((group) => (
+              <div
+                key={group.category}
+                className="rounded-2xl border border-slate-200/90 bg-white p-5 shadow-2xs transition hover:border-indigo-200"
+              >
+                <div className="flex items-center justify-between">
+                  <h3 className="font-serif-display text-base font-bold text-slate-900">
+                    {group.category}
+                  </h3>
+                  <span className="text-[11px] font-medium text-slate-400">
+                    {group.items.length} skills
+                  </span>
+                </div>
+                <div className="mt-3.5 flex flex-wrap gap-2">
+                  {group.items.map((skill) => (
+                    <span
+                      key={skill.name}
+                      className={`inline-flex items-center gap-1.5 rounded-lg px-2.5 py-1 text-xs font-medium transition ${
+                        skill.core
+                          ? 'border border-indigo-200 bg-indigo-50/70 text-indigo-700'
+                          : 'border border-slate-200/70 bg-slate-50 text-slate-700'
+                      }`}
+                    >
+                      {skill.core && (
+                        <span className="h-1.5 w-1.5 rounded-full bg-indigo-600" />
+                      )}
+                      {skill.name}
+                    </span>
+                  ))}
+                </div>
               </div>
-              <FaExternalLinkAlt className="mt-2 text-blue-600" />
-            </div>
-            <p className="mt-6 leading-8 text-slate-600">{project.description}</p>
-            <div className="mt-7 flex flex-wrap gap-2">
-              {project.tags.map((tag) => <span key={tag} className="rounded-full border border-blue-100 bg-blue-50 px-3 py-1 text-xs font-bold text-blue-700">{tag}</span>)}
-            </div>
-          </a>
-        ))}
-      </div>
-      <p className="mt-12 text-center text-slate-500">And many more to come!</p>
-    </main>
-  )
-}
-
-function Contact() {
-  const endpoint = import.meta.env.VITE_FORMSPREE_ENDPOINT
-  return (
-    <main className="page-pad bg-neutral-100">
-      <SectionTitle kicker="Contact" title="Let’s Work Together" text="Send me a message for collaboration, project work, internship or software engineering opportunities." />
-      <div className="mx-auto grid max-w-7xl gap-8 lg:grid-cols-[.85fr_1.15fr]">
-        <div className="space-y-4">
-          {contacts.map((item) => (
-            <a key={item.label} href={item.href} target={item.href.startsWith('http') ? '_blank' : undefined} rel="noreferrer" className="flex items-center gap-4 rounded-3xl border border-neutral-200 bg-white p-5 shadow-soft transition hover:border-blue-300">
-              <span className="grid h-12 w-12 place-items-center rounded-full bg-blue-50 text-blue-600">{item.icon}</span>
-              <span><strong className="block text-sm uppercase tracking-widest">{item.label}</strong><span className="text-neutral-600">{item.value}</span></span>
-            </a>
-          ))}
-        </div>
-        <form action={endpoint} method="POST" className="rounded-[2rem] border border-neutral-200 bg-white p-8 shadow-soft">
-          <div className="grid gap-5 md:grid-cols-2">
-            <input name="name" required placeholder="ENTER YOUR NAME*" className="form-input" />
-            <input name="email" type="email" required placeholder="ENTER YOUR EMAIL*" className="form-input" />
+            ))}
           </div>
-          <input name="phone" placeholder="PHONE NUMBER" className="form-input mt-5" />
-          <textarea name="message" required placeholder="YOUR MESSAGE*" rows="6" className="form-input mt-5 resize-none" />
-          <button type="submit" className="premium-btn mt-6 w-full justify-center">Submit Message</button>
-        </form>
+        </div>
       </div>
-    </main>
+    </section>
   )
 }
 
-function Home() {
-  return <><Hero /><IntroBand /><About /><Skills /><Portfolio /><Contact /></>
-}
+function ContactSection() {
+  const endpoint = import.meta.env.VITE_FORMSPREE_ENDPOINT
 
-function Footer() {
   return (
-    <footer className="border-t border-slate-200 bg-white px-5 py-10 text-center">
-      <Link to="/" className="text-sm font-black uppercase tracking-[0.3em] text-blue-600 hover:text-blue-800">Back to top</Link>
-      <p className="mt-6 text-sm text-slate-500">© 2026 Ruhul Amin. All Rights Reserved.</p>
-    </footer>
+    <section id="contact" className="border-t border-slate-100 bg-slate-50/70 py-16">
+      <div className="mx-auto max-w-5xl px-6">
+        <h2 className="font-serif-display section-underline text-2xl font-bold text-slate-900 sm:text-3xl">
+          Get in Touch
+        </h2>
+        <p className="mt-4 max-w-2xl text-sm leading-6 text-slate-600">
+          Open to software engineering roles, full-stack collaborations, and research discussions.
+        </p>
+
+        <div className="mt-8 grid gap-8 lg:grid-cols-[0.85fr_1.15fr]">
+          <div className="space-y-3">
+            <a
+              href={`mailto:${profile.email}`}
+              className="flex items-center gap-3.5 rounded-xl border border-slate-200 bg-white p-4 transition hover:border-indigo-300"
+            >
+              <span className="flex h-10 w-10 items-center justify-center rounded-lg bg-indigo-50 text-indigo-600">
+                <FaEnvelope />
+              </span>
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-wider text-slate-400">Email</p>
+                <p className="text-sm font-medium text-slate-800">{profile.email}</p>
+              </div>
+            </a>
+
+            <a
+              href={`tel:${profile.phone.replaceAll(' ', '')}`}
+              className="flex items-center gap-3.5 rounded-xl border border-slate-200 bg-white p-4 transition hover:border-indigo-300"
+            >
+              <span className="flex h-10 w-10 items-center justify-center rounded-lg bg-indigo-50 text-indigo-600">
+                <FaPhoneAlt />
+              </span>
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-wider text-slate-400">Phone</p>
+                <p className="text-sm font-medium text-slate-800">{profile.phone}</p>
+              </div>
+            </a>
+
+            <div className="flex items-center gap-3.5 rounded-xl border border-slate-200 bg-white p-4">
+              <span className="flex h-10 w-10 items-center justify-center rounded-lg bg-indigo-50 text-indigo-600">
+                <FaMapMarkerAlt />
+              </span>
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-wider text-slate-400">Location</p>
+                <p className="text-sm font-medium text-slate-800">{profile.location}</p>
+              </div>
+            </div>
+          </div>
+
+          <form
+            action={endpoint}
+            method="POST"
+            className="rounded-2xl border border-slate-200 bg-white p-6 shadow-2xs"
+          >
+            <div className="grid gap-4 sm:grid-cols-2">
+              <input
+                name="name"
+                required
+                placeholder="Your Name *"
+                className="w-full rounded-lg border border-slate-300 px-3.5 py-2.5 text-sm outline-none transition focus:border-indigo-600"
+              />
+              <input
+                name="email"
+                type="email"
+                required
+                placeholder="Your Email *"
+                className="w-full rounded-lg border border-slate-300 px-3.5 py-2.5 text-sm outline-none transition focus:border-indigo-600"
+              />
+            </div>
+            <textarea
+              name="message"
+              required
+              rows="4"
+              placeholder="Write your message *"
+              className="mt-4 w-full resize-none rounded-lg border border-slate-300 px-3.5 py-2.5 text-sm outline-none transition focus:border-indigo-600"
+            />
+            <button
+              type="submit"
+              className="mt-4 inline-flex items-center justify-center rounded-lg bg-indigo-600 px-5 py-2.5 text-xs font-semibold uppercase tracking-wider text-white transition hover:bg-indigo-700"
+            >
+              Send Message
+            </button>
+          </form>
+        </div>
+      </div>
+    </section>
   )
 }
 
 export default function App() {
   return (
-    <div className="min-h-screen font-sans text-neutral-950">
-      <Header />
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/about" element={<About />} />
-        <Route path="/skills" element={<Skills />} />
-        <Route path="/portfolio" element={<Portfolio />} />
-        <Route path="/contact" element={<Contact />} />
-      </Routes>
-      <Footer />
+    <div className="min-h-screen bg-white text-slate-900">
+      <Navbar />
+      <main>
+        <HeroSection />
+        <UpdatesSection />
+        <ResearchSection />
+        <ProjectsSection />
+        <ExperienceAndSkillsSection />
+        <ContactSection />
+      </main>
+      <footer className="border-t border-slate-200 bg-white py-8 text-center text-xs text-slate-500">
+        <p>© 2026 Ruhul Amin </p>
+      </footer>
     </div>
   )
 }
